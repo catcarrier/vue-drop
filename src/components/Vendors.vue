@@ -20,14 +20,14 @@
 
 <script>
 export default {
-  data() {
-    return {
-      vendors: [
-        { name: "Castor", number: "10012", product: "stardust" },
-        { name: "Pollux", number: "90453", product: "pixels" }
-      ]
-    };
-  },
+  // data() {
+  //   return {
+  //     vendors: [
+  //       { name: "Castor", number: "10012", product: "stardust" },
+  //       { name: "Pollux", number: "90453", product: "pixels" }
+  //     ]
+  //   };
+  // },
   methods: {
     init() {
       if (window.FileReader) {
@@ -55,38 +55,28 @@ export default {
 
             var dt = e.dataTransfer;
             var files = dt.files;
+
             for (var i = 0; i < files.length; i++) {
               var file = files[i];
               var reader = new FileReader();
 
-              //attach event handlers here...
               addEventHandler(
                 reader,
                 "loadend",
                 function(e, file) {
-                  var bin = this.result;
-                  var newFile = document.createElement("div");
-                  newFile.innerHTML =
-                    "Loaded : " + file.name + " size " + file.size + " B";
-                  list.appendChild(newFile);
-                  var fileNumber = list.getElementsByTagName("div").length;
-                  status.innerHTML =
-                    fileNumber < files.length
-                      ? "Loaded 100% of file " +
-                        fileNumber +
-                        " of " +
-                        files.length +
-                        "..."
-                      : "Done loading. processed " + fileNumber + " files.";
+                  console.log(file);
 
-                  var img = document.createElement("img");
-                  img.file = file;
-                  img.src = bin;
-                  list.appendChild(img);
+                  // if csv ingest it, otherwise ignore it
+                  if (file.name.toLowerCase().endsWith("csv")) {
+                    var text = this.result;
+                    var content = document.createElement("div");
+                    content.innerHTML = text;
+                    list.appendChild(content);
+                  }
                 }.bindToEventHandler(file)
               );
 
-              reader.readAsDataURL(file);
+              reader.readAsText(file);
             }
             return false;
           });
@@ -121,6 +111,13 @@ export default {
       };
     },
     remove(index) {}
+  },
+  computed: {
+    vendors: {
+      get() {
+        return this.$store.getters.vendors;
+      }
+    }
   },
   beforeMount() {
     this.init();
