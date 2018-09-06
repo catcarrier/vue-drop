@@ -69,9 +69,30 @@ export default {
                   // if csv ingest it, otherwise ignore it
                   if (file.name.toLowerCase().endsWith("csv")) {
                     var text = this.result;
-                    var content = document.createElement("div");
-                    content.innerHTML = text;
-                    list.appendChild(content);
+
+
+                    // var content = document.createElement("div");
+                    // content.innerHTML = text;
+                    // list.appendChild(content);
+
+                    // TODO validate the file
+                    var rows = text.split('\n');
+                    parseData( rows, (err, data) => {
+                      if(err) {
+                        // TODO set the error state
+                      } else {
+                        // TODO push the data into the store
+                        
+                      }
+                    } )
+
+                    // TODO ingest the data
+
+
+                    // TODO add the data to the store
+
+                  } else {
+                    console.log(file.name + " not expected extension, skipping")
                   }
                 }.bindToEventHandler(file)
               );
@@ -84,6 +105,21 @@ export default {
       } else {
         document.getElementById("status").innerHTML =
           "Your browser does not support the HTML5 FileReader.";
+      }
+
+      function parseData(rows, cb) {
+        // TODO validate data
+        // each row must contain three elements, none blank
+
+
+        // parse into objects
+        // return dummy objects for now
+        var objects = [
+          { name: "Donner", number: "55555", product: "thunder" },
+          { name: "Blitzen", number: "88888", product: "lightning" }
+        ];
+
+        cb(null, objects)
       }
 
       function addEventHandler(obj, evt, handler) {
